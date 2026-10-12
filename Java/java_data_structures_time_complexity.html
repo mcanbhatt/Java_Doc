@@ -1,0 +1,138 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); font-size: 13px; color: var(--color-text-primary); }
+  .wrap { padding: 1rem 0; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab { padding: 6px 16px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: transparent; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); font-family: var(--font-sans); transition: all 0.15s; }
+  .tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+  .tab:hover:not(.active) { background: var(--color-background-secondary); }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
+  .dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .tbl-wrap { overflow-x: auto; border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); }
+  table { width: 100%; border-collapse: collapse; table-layout: auto; }
+  thead th { background: var(--color-background-secondary); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); padding: 10px 12px; text-align: left; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
+  tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--color-background-secondary); }
+  td { padding: 9px 12px; vertical-align: middle; }
+  td.name { font-weight: 500; white-space: nowrap; color: var(--color-text-primary); font-size: 13px; }
+  td.pkg { font-size: 11px; color: var(--color-text-tertiary); font-family: var(--font-mono); white-space: nowrap; }
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 4px; font-weight: 500; font-size: 12px; font-family: var(--font-mono); white-space: nowrap; }
+  .o1 { background: #EAF3DE; color: #27500A; }
+  .ologn { background: #E6F1FB; color: #0C447C; }
+  .on { background: #FAEEDA; color: #633806; }
+  .onamort { background: #EEEDFE; color: #3C3489; }
+  .category-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500; }
+  .cat-list { background: #EEEDFE; color: #3C3489; }
+  .cat-set  { background: #E1F5EE; color: #085041; }
+  .cat-map  { background: #E6F1FB; color: #0C447C; }
+  .note { font-size: 11px; color: var(--color-text-tertiary); max-width: 160px; }
+  .hidden { display: none; }
+  @media (prefers-color-scheme: dark) {
+    .o1 { background: #27500A; color: #C0DD97; }
+    .ologn { background: #0C447C; color: #B5D4F4; }
+    .on { background: #633806; color: #FAC775; }
+    .onamort { background: #3C3489; color: #CECBF6; }
+    .cat-list { background: #3C3489; color: #CECBF6; }
+    .cat-set  { background: #085041; color: #9FE1CB; }
+    .cat-map  { background: #0C447C; color: #B5D4F4; }
+  }
+</style>
+<div class="wrap">
+  <h2 class="sr-only">Java data structures time complexity reference covering lists, sets, and maps</h2>
+  <div class="tabs">
+    <button class="tab active" onclick="filter('all')">All</button>
+    <button class="tab" onclick="filter('list')">Lists</button>
+    <button class="tab" onclick="filter('set')">Sets</button>
+    <button class="tab" onclick="filter('map')">Maps</button>
+  </div>
+  <div class="legend">
+    <span class="legend-item"><span class="dot" style="background:#639922;"></span>O(1) constant</span>
+    <span class="legend-item"><span class="dot" style="background:#7F77DD;"></span>O(1)*amortized</span>
+    <span class="legend-item"><span class="dot" style="background:#378ADD;"></span>O(log n) logarithmic</span>
+    <span class="legend-item"><span class="dot" style="background:#BA7517;"></span>O(n) linear</span>
+  </div>
+  <div class="tbl-wrap">
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th>Structure</th>
+          <th>Package</th>
+          <th>Put / Add</th>
+          <th>Update</th>
+          <th>Get</th>
+          <th>Remove</th>
+          <th>Iteration</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+<script>
+const data = [
+  {cat:'list', name:'ArrayList',           pkg:'java.util',           put:'O(1)*',  upd:'O(1)',    get:'O(1)',    rem:'O(n)',    iter:'O(n)',  note:'O(n) add if resize; index-based'},
+  {cat:'list', name:'LinkedList',          pkg:'java.util',           put:'O(1)',   upd:'O(n)',    get:'O(n)',    rem:'O(n)',    iter:'O(n)',  note:'O(1) add/remove at head/tail'},
+  {cat:'list', name:'Vector',              pkg:'java.util',           put:'O(1)*',  upd:'O(1)',    get:'O(1)',    rem:'O(n)',    iter:'O(n)',  note:'Synchronized; legacy class'},
+  {cat:'list', name:'Stack',               pkg:'java.util',           put:'O(1)',   upd:'O(n)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'LIFO; push/pop O(1), peek O(1)'},
+  {cat:'list', name:'ArrayDeque',          pkg:'java.util',           put:'O(1)',   upd:'O(n)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'O(1) at both ends; preferred over Stack'},
+  {cat:'list', name:'CopyOnWriteArrayList',pkg:'java.util.concurrent',put:'O(n)',   upd:'O(n)',    get:'O(1)',    rem:'O(n)',    iter:'O(n)',  note:'Thread-safe; copies array on write'},
+
+  {cat:'set',  name:'HashSet',             pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'Backed by HashMap; no order'},
+  {cat:'set',  name:'LinkedHashSet',       pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'Maintains insertion order'},
+  {cat:'set',  name:'TreeSet',             pkg:'java.util',           put:'O(log n)',upd:'O(log n)',get:'O(log n)',rem:'O(log n)',iter:'O(n)', note:'Sorted; backed by TreeMap'},
+  {cat:'set',  name:'EnumSet',             pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'Bit-vector; enums only; very fast'},
+  {cat:'set',  name:'CopyOnWriteArraySet', pkg:'java.util.concurrent',put:'O(n)',   upd:'O(n)',    get:'O(n)',    rem:'O(n)',    iter:'O(n)',  note:'Thread-safe; small sets only'},
+  {cat:'set',  name:'ConcurrentSkipListSet',pkg:'java.util.concurrent',put:'O(log n)',upd:'O(log n)',get:'O(log n)',rem:'O(log n)',iter:'O(n)',note:'Thread-safe; sorted set'},
+
+  {cat:'map',  name:'HashMap',             pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n+c)',note:'n = entries, c = capacity'},
+  {cat:'map',  name:'LinkedHashMap',       pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'Insertion / access order'},
+  {cat:'map',  name:'TreeMap',             pkg:'java.util',           put:'O(log n)',upd:'O(log n)',get:'O(log n)',rem:'O(log n)',iter:'O(n)', note:'Sorted by key (Red-Black tree)'},
+  {cat:'map',  name:'Hashtable',           pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n+c)',note:'Synchronized legacy; use ConcurrentHashMap'},
+  {cat:'map',  name:'EnumMap',             pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'Array-backed; enum keys only'},
+  {cat:'map',  name:'ConcurrentHashMap',   pkg:'java.util.concurrent',put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'Thread-safe; segment locking (Java 8+)'},
+  {cat:'map',  name:'WeakHashMap',         pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n+c)',note:'Keys are weak refs; GC can remove entries'},
+  {cat:'map',  name:'IdentityHashMap',     pkg:'java.util',           put:'O(1)',   upd:'O(1)',    get:'O(1)',    rem:'O(1)',    iter:'O(n)',  note:'Uses == not equals(); rare use case'},
+  {cat:'map',  name:'ConcurrentSkipListMap',pkg:'java.util.concurrent',put:'O(log n)',upd:'O(log n)',get:'O(log n)',rem:'O(log n)',iter:'O(n)',note:'Thread-safe; sorted map'},
+];
+
+function badge(v) {
+  if (v === 'O(1)')     return `<span class="badge o1">O(1)</span>`;
+  if (v === 'O(1)*')    return `<span class="badge onamort">O(1)*</span>`;
+  if (v.startsWith('O(log')) return `<span class="badge ologn">${v}</span>`;
+  return `<span class="badge on">${v}</span>`;
+}
+
+function catBadge(c) {
+  return `<span class="category-badge cat-${c}">${c.toUpperCase()}</span>`;
+}
+
+let current = 'all';
+function filter(cat) {
+  current = cat;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+  const rows = current === 'all' ? data : data.filter(d => d.cat === current);
+  tbody.innerHTML = rows.map(d => `
+    <tr>
+      <td class="name">${d.name}</td>
+      <td class="pkg">${d.pkg}</td>
+      <td>${badge(d.put)}</td>
+      <td>${badge(d.upd)}</td>
+      <td>${badge(d.get)}</td>
+      <td>${badge(d.rem)}</td>
+      <td>${badge(d.iter)}</td>
+      <td class="note">${d.note}</td>
+    </tr>
+  `).join('');
+}
+render();
+</script>

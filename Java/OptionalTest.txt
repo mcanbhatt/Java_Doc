@@ -1,0 +1,105 @@
+package com.epam.dsa;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+class Chapter {
+    String title;
+    String content;
+    String summary;
+
+    public Chapter(String title, String content, String summary) {
+        this.title = title;
+        this.content = content;
+        this.summary = summary;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+}
+
+class Book {
+    String title;
+    List<Chapter> chapters;
+
+    public Book(String title, List<Chapter> chapters) {
+        this.title = title;
+        this.chapters = chapters;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<Chapter> getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(List<Chapter> chapters) {
+        this.chapters = chapters;
+    }
+}
+
+public class OptionalTest {
+    public static void main(String args[]) {
+
+        List<Chapter> chapterList = new ArrayList<>();
+        // Create 20 chapters, 10 with summary as null
+        for (int i = 1; i <= 20; i++) {
+            String summary = (i <= 10) ? null : "Summary " + i;
+            chapterList.add(new Chapter("Title " + i, "Content " + i, summary));
+        }
+
+
+
+        Book book = new Book("Sample Book", chapterList);
+        //book = null;
+
+        List<Chapter> chaptersWithSummary = new ArrayList<>();
+        Optional.ofNullable(book).map(Book::getChapters).flatMap(List::stream).map(Chapter::getSummary)
+
+
+
+//        if (book != null) {
+//            for (Chapter chapter : book.chapters) {
+//                if (chapter != null)
+//                    if (chapter.summary != null) {
+//                        chaptersWithSummary.add(chapter);
+//                    }
+//            }
+//        }
+
+        // Print the filtered chapters
+        for (
+
+            Chapter chapter : chaptersWithSummary) {
+            System.out.println(chapter.title + " - " + chapter.summary);
+        }
+    }
+}
